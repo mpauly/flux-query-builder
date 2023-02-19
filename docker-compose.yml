@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  influxdb:
+    image: influxdb:2.6-alpine
+    env_file:
+      - influxv2.env
+    ports:
+      - "8086:8086"

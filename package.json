@@ -20,6 +20,7 @@
   },
   "scripts": {
     "test": "jest",
+    "test-e2e": "npx jest --config jest-e2e.config.js",
     "lint": "npx eslint -- src/**/*.ts test/**/*.ts",
     "format": "prettier --config .prettierrc 'src/**/*.ts' 'test/**/*.ts' --write",
     "format-check": "prettier --config .prettierrc 'src/**/*.ts' 'test/**/*.ts' --check"

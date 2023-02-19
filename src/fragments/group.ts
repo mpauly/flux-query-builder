@@ -3,7 +3,7 @@ import { fluxListOfStrings } from '../base/utils';
 import { FieldName } from '../types/base';
 import { QueryFragment } from './queryFragment';
 
-type ModeChoices = 'by' | 'except';
+export type ModeChoices = 'by' | 'except';
 
 export class GroupFragment extends QueryFragment implements QueryFragment {
   protected functionName = 'group';
@@ -16,7 +16,7 @@ export class GroupFragment extends QueryFragment implements QueryFragment {
     const cols = this.optionalArgs?.columns === undefined ? undefined : fluxListOfStrings(this.optionalArgs.columns);
     return [
       ['columns', cols],
-      ['mode', this.optionalArgs?.mode === undefined ? undefined : fluxString(this.optionalArgs.mode)],
+      ['mode', this.optionalArgs?.mode === undefined ? undefined : fluxString(this.optionalArgs.mode)]
     ];
   }
 }

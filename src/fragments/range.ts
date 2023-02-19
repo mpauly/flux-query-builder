@@ -12,7 +12,7 @@ export class RangeFragment extends QueryFragment {
   }
 
   inputToFlux(date: bigint | Date | FluxDurationString) {
-    if (date instanceof Date) return fluxDateTime(date);
+    if (date instanceof Date) return fluxDateTime(date.toISOString());
     if (typeof date === 'bigint') return fluxInteger(date);
     return fluxDuration(date);
   }
@@ -20,7 +20,7 @@ export class RangeFragment extends QueryFragment {
   protected collectArgs(): [string, FluxParameterLike | undefined][] {
     return [
       ['start', this.inputToFlux(this.start)],
-      ['stop', this.stop === undefined ? undefined : this.inputToFlux(this.stop)],
+      ['stop', this.stop === undefined ? undefined : this.inputToFlux(this.stop)]
     ];
   }
 }

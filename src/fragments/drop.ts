@@ -6,7 +6,7 @@ import { QueryFragment } from './queryFragment';
 export class DropFragment extends QueryFragment implements QueryFragment {
   protected functionName = 'drop';
 
-  constructor(protected columns: FieldName[]) {
+  constructor(protected columns: string[]) {
     super();
   }
 
