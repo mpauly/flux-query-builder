@@ -1,6 +1,6 @@
-import { flux, fluxBool, fluxDuration, fluxExpression, FluxParameterLike, fluxString, FluxTableColumn } from "@influxdata/influxdb-client";
+import { fluxBool, fluxDuration, fluxExpression, FluxParameterLike, fluxString, FluxTableColumn } from "@influxdata/influxdb-client";
 import { FluxFunction } from "../base/function";
-import { FluxDurationString, FluxFunctionName, QueryLine } from "../types/base";
+import { FluxDurationString, FluxFunctionName } from "../types/base";
 import { QueryFragment } from "./queryFragment";
 
 

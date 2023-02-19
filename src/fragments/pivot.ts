@@ -1,4 +1,5 @@
 import { fluxExpression, FluxParameterLike, fluxString } from "@influxdata/influxdb-client";
+import { fluxListOfStrings } from "../base/utils";
 import { FieldName } from "../types/base";
 import { QueryFragment } from "./queryFragment";
 
@@ -11,8 +12,8 @@ export class PivotFragment extends QueryFragment {
     }
     protected collectArgs(): [string, FluxParameterLike | undefined][] {
         return [
-            ['rowKey', fluxExpression(this.rowKeys.map(fluxString).join(','))],
-            ['columnKey', fluxExpression(this.columnKeys.map(fluxString).join(','))],
+            ['rowKey', fluxListOfStrings(this.rowKeys)],
+            ['columnKey', fluxListOfStrings(this.columnKeys)],
             ['valueColumn', fluxString(this.valueColumn)],
         ]
     }
