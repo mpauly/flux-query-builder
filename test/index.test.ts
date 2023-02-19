@@ -1,5 +1,6 @@
 import { from } from "../src";
 import { expect, test } from '@jest/globals';
+import { fluxExpression } from "@influxdata/influxdb-client";
 
 // this"normalization" removes all whitespaces - not ideal for now, but good enough
 function normalizeQuery(query: string) {
@@ -34,7 +35,7 @@ test('Test basic queries', () => {
             `
         },
         {
-            query: from('example-bucket').range('-5m').filter({ _measurement: 'mem', _field: 'used_percent' }),
+            query: from('example-bucket').range('-5m').filter({ _measurement: 'mem', _field: 'used_percent' }).drop(['host']),
             fluxQuery: `
             from(bucket: "example-bucket")
             |> range(start: duration(v: "-5m"))
@@ -43,54 +44,54 @@ test('Test basic queries', () => {
             `
         },
         {
-            query: from('example-bucket'),
+            query: from('example-bucket').range('-1h').filter({ _measurement: 'example-measurement-name', mytagname: 'example-tag-value' }).filter({ _field: 'example-field-name' }),
             fluxQuery: `
             from(bucket: "example-bucket")
-            |> range(start: -1h)
-            |> filter(fn: (r) => r._measurement == "example-measurement-name" and r.mytagname == "example-tag-value")
-            |> filter(fn: (r) => r._field == "example-field-name")
+            |> range(start: duration(v: "-1h"))
+            |> filter(fn: (r) => r["_measurement"] == "example-measurement-name" and r["mytagname"] == "example-tag-value")
+            |> filter(fn: (r) => r["_field"] == "example-field-name")
             `
         },
         {
-            query: from('example-bucket'),
+            query: from('example-bucket').group({ columns: ['_time'] }).mean().group({ columns: ['_value', '_time'], mode: 'except' }),
             fluxQuery: `
-            dataSet
+            from(bucket: "example-bucket")
             |> group(columns: ["_time"])
             |> mean()
             |> group(columns: ["_value", "_time"], mode: "except")
             `
         },
         {
-            query: from('example-bucket'),
+            query: from('example-bucket').range('-12h').filter({ _measurement: 'system', '_field': 'uptime' }).sort({ columns: ['region', 'host', '_value'] }).limit(10n),
             fluxQuery: `
             from(bucket: "example-bucket")
-            |> range(start: -12h)
-            |> filter(fn: (r) => r._measurement == "system" and r._field == "uptime")
+            |> range(start: duration(v: "-12h"))
+            |> filter(fn: (r) => r["_measurement"] == "system" and r["_field"] == "uptime")
             |> sort(columns: ["region", "host", "_value"])
             |> limit(n: 10)
             `
         },
+        // {
+        //     query: from('example-bucket'),
+        //     fluxQuery: `
+        //     from(bucket: "example-bucket")
+        //     |> window(every: 1m)
+        //     |> mean()
+        //     |> duplicate(column: "_stop", as: "_time")
+        //     |> window(every: inf)
+        //     `
+        // },
         {
-            query: from('exmaple-bucket'),
+            query: from('example-bucket').range('-10m').filter({ _measurement: 'mem', _field: 'active' }).map({ _value: { ['$/']: 1073741824 } }),
             fluxQuery: `
             from(bucket: "example-bucket")
-            |> window(every: 1m)
-            |> mean()
-            |> duplicate(column: "_stop", as: "_time")
-            |> window(every: inf)
+            |> range(start: duration(v: "-10m"))
+            |> filter(fn: (r) => r["_measurement"] == "mem" and r["_field"] == "active")
+            |> map(fn: (r) => ({r with _value: r["_value"] / 1073741824}))
             `
         },
         {
-            query: from('example-bucket'),
-            fluxQuery: `
-            from(bucket: "example-bucket")
-            |> range(start: -10m)
-            |> filter(fn: (r) => r._measurement == "mem" and r._field == "active")
-            |> map(fn: (r) => ({r with _value: r._value / 1073741824}))
-            `
-        },
-        {
-            query: from('example-bucket'),
+            query: from('example-bucket').pivot(['_time'], ['_field'], '_value').map({ _value: fluxExpression('(r.field1 + r.field2) / r.field3 * 100.0') }),
             fluxQuery: `
             from(bucket: "example-bucket")
             |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
@@ -98,11 +99,11 @@ test('Test basic queries', () => {
             `
         },
         {
-            query: from('example-bucket'),
+            query: from('example-bucket').range('-1h').filter({ _measurement: { $in: ['m1', 'm2'] }, _field: { $in: ['field1', 'field2'] } }).group().pivot(['_time'], ['_field'], '_value').map({ _value: fluxExpression('r.field1 / r.field2 * 100.0') }),
             fluxQuery: `
             from(bucket: "example-bucket")
-            |> range(start: -1h)
-            |> filter(fn: (r) => (r._measurement == "m1" or r._measurement == "m2") and (r._field == "field1" or r._field == "field2"))
+            |> range(start: duration(v: "-1h"))
+            |> filter(fn: (r) => contains(value: r["_measurement"], set: ["m1", "m2"]) and contains(value: r["_field"], set: ["field1", "field2"]))
             |> group()
             |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
             |> map(fn: (r) => ({r with _value: r.field1 / r.field2 * 100.0}))      
