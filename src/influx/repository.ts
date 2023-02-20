@@ -1,9 +1,10 @@
 import { InfluxDB, QueryApi, WriteApi } from '@influxdata/influxdb-client';
 import { FluxQuery, from } from '../base/query';
+import { FluxFieldTypes } from '../types/base';
 
 interface BaseSchema {
-  fields: { [name: string]: number | bigint | string | boolean };
-  tags: { [name: string]: string[] };
+  fields: Record<string, FluxFieldTypes>;
+  tags: Record<string, string[]>;
 }
 
 type FieldsOfSchema<Schema extends BaseSchema> = keyof Schema['fields'];

@@ -6,15 +6,15 @@ import { QueryFragment } from './queryFragment';
 export class SortFragment extends QueryFragment {
   protected functionName = 'sort';
 
-  constructor(protected optionalArgs: { columns?: FieldName[]; desc?: boolean }) {
+  constructor(protected optionalArgs?: { columns?: FieldName[]; desc?: boolean }) {
     super();
   }
 
   protected collectArgs(): [string, FluxParameterLike | undefined][] {
-    const cols = this.optionalArgs.columns === undefined ? undefined : fluxListOfStrings(this.optionalArgs.columns);
+    const cols = this.optionalArgs?.columns === undefined ? undefined : fluxListOfStrings(this.optionalArgs.columns);
     return [
       ['columns', cols],
-      ['desc', this.optionalArgs.desc === undefined ? undefined : fluxBool(this.optionalArgs.desc)]
+      ['desc', this.optionalArgs?.desc === undefined ? undefined : fluxBool(this.optionalArgs.desc)]
     ];
   }
 }

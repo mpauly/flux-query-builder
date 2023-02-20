@@ -12,11 +12,11 @@ import { RangeFragment } from '../fragments/range';
 import { RawFluxFragment } from '../fragments/rawFlux';
 import { SortFragment } from '../fragments/sort';
 import { YieldFragment } from '../fragments/yield';
-import { BucketName } from '../types/base';
+import { BucketName, Fields, FluxFieldTypes } from '../types/base';
+import { FluxFilterQuery } from '../types/filter';
+import { FluxFunction } from './function';
 
-type Fields<TReturnType> = Extract<keyof TReturnType, string>;
-
-export class FluxQuery<TReturnType> {
+export class FluxQuery<TReturnType extends Record<string, FluxFieldTypes | Date>> {
   protected fragments: Renderable[] = [];
 
   constructor(name: BucketName) {
@@ -27,7 +27,9 @@ export class FluxQuery<TReturnType> {
     return this.fragments.map((f) => f.renderFlux()).join('\n');
   }
 
-  rawFlux<TReturn = TReturnType>(...args: ConstructorParameters<typeof RawFluxFragment>): FluxQuery<TReturn> {
+  rawFlux<TReturn extends Record<string, FluxFieldTypes | Date> = TReturnType>(
+    ...args: ConstructorParameters<typeof RawFluxFragment>
+  ): FluxQuery<TReturn> {
     this.fragments.push(new RawFluxFragment(...args));
     return this as FluxQuery<TReturn>;
   }
@@ -44,12 +46,12 @@ export class FluxQuery<TReturnType> {
     return this;
   }
 
-  filter(...args: ConstructorParameters<typeof FilterFragment>) {
-    this.fragments.push(new FilterFragment(...args));
+  filter(filter: string | FluxFunction<any, boolean> | FluxFilterQuery<TReturnType>) {
+    this.fragments.push(new FilterFragment(filter));
     return this;
   }
 
-  group<TColumns extends keyof TReturnType>(optionalArgs?: { columns?: TColumns[]; mode?: ModeChoices }) {
+  group<TColumns extends Fields<TReturnType>>(optionalArgs?: { columns?: TColumns[]; mode?: ModeChoices }) {
     this.fragments.push(new GroupFragment(optionalArgs as ConstructorParameters<typeof GroupFragment>[0]));
     return this;
   }
@@ -83,28 +85,28 @@ export class FluxQuery<TReturnType> {
     return this;
   }
 
-  sort(...args: ConstructorParameters<typeof SortFragment>) {
-    this.fragments.push(new SortFragment(...args));
+  sort<TColumns extends Fields<TReturnType>>(optionalArgs?: { columns?: TColumns[]; desc?: boolean }) {
+    this.fragments.push(new SortFragment(optionalArgs));
     return this;
   }
 
-  yield(...args: ConstructorParameters<typeof YieldFragment>) {
-    this.fragments.push(new YieldFragment(...args));
+  yield<TKey extends string = '_results', TValueType = FluxFieldTypes>(name?: TKey): this {
+    this.fragments.push(new YieldFragment(name));
     return this;
   }
 }
 
 export function from<
-  TReturnType = {
+  TReturnType extends Record<string, FluxFieldTypes | Date> = {
     result: '_result';
     table: number;
     _start: Date;
     _stop: Date;
     _time: Date;
-    _value: number;
+    _value: FluxFieldTypes;
     _field: string;
     _measurement: string;
-  }
+  } & Record<string, string>
 >(name: BucketName): FluxQuery<TReturnType> {
   return new FluxQuery<TReturnType>(name);
 }

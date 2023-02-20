@@ -1,16 +1,22 @@
 import { flux, fluxExpression, FluxParameterLike } from '@influxdata/influxdb-client';
 import { FluxFunction } from '../base/function';
+import { Fields, FluxFieldTypes } from '../types/base';
 import { FluxFilterOptions, FluxFilterQuery, FluxTagValue, IN_KEY } from '../types/filter';
 import { QueryFragment } from './queryFragment';
 
-export class FilterFragment extends QueryFragment {
+export class FilterFragment<
+  TReturnType extends Record<string, FluxFieldTypes | Date> = Record<string, FluxFieldTypes>
+> extends QueryFragment {
   protected functionName = 'filter';
 
-  constructor(protected filter: string | FluxFunction<any, boolean> | FluxFilterQuery) {
+  constructor(protected filter: string | FluxFunction<any, boolean> | FluxFilterQuery<TReturnType>) {
     super();
   }
 
-  buildFieldFilter(field: string, value: FluxTagValue | FluxFilterOptions) {
+  buildFieldFilter<TField extends Fields<TReturnType>>(
+    field: TField,
+    value: FluxTagValue | FluxFilterOptions<TReturnType[TField]>
+  ) {
     if (typeof value === 'object') {
       if (value[IN_KEY]) {
         const set = value[IN_KEY]?.map((v) => flux`${v}`).join(', ');
@@ -20,15 +26,16 @@ export class FilterFragment extends QueryFragment {
     return flux`r[${field}] == ${value}`;
   }
 
-  buildFilterFunction(filters: FluxFilterQuery, concat: 'and' | 'or' = 'and'): FluxFunction<any, boolean> {
+  buildFilterFunction(filters: FluxFilterQuery<TReturnType>, concat: 'and' | 'or' = 'and'): FluxFunction<any, boolean> {
     const filterString = Object.entries(filters)
-      .map(([key, value]) => this.buildFieldFilter(key, value))
+      .filter(([_key, value]) => value !== undefined)
+      .map(([key, value]) => this.buildFieldFilter(key as Fields<TReturnType>, value as FluxTagValue))
       .join(` ${concat} `);
     const fluxQuery = flux`(r) => ${fluxExpression(filterString)}`;
     return new FluxFunction<any, boolean>(fluxQuery);
   }
 
-  buildFilter(filter: string | FluxFunction<any, boolean> | FluxFilterQuery): FluxFunction<any, boolean> {
+  buildFilter(filter: string | FluxFunction<any, boolean> | FluxFilterQuery<TReturnType>): FluxFunction<any, boolean> {
     if (typeof filter === 'string') {
       return this.buildFilter(new FluxFunction<any, boolean>(filter));
     }
