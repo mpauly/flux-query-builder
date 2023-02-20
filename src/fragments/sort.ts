@@ -3,7 +3,7 @@ import { fluxListOfStrings } from '../base/utils';
 import { FieldName } from '../types/base';
 import { QueryFragment } from './queryFragment';
 
-export class SortFragment extends QueryFragment implements QueryFragment {
+export class SortFragment extends QueryFragment {
   protected functionName = 'sort';
 
   constructor(protected optionalArgs: { columns?: FieldName[]; desc?: boolean }) {
@@ -14,7 +14,7 @@ export class SortFragment extends QueryFragment implements QueryFragment {
     const cols = this.optionalArgs.columns === undefined ? undefined : fluxListOfStrings(this.optionalArgs.columns);
     return [
       ['columns', cols],
-      ['desc', this.optionalArgs.desc === undefined ? undefined : fluxBool(this.optionalArgs.desc)],
+      ['desc', this.optionalArgs.desc === undefined ? undefined : fluxBool(this.optionalArgs.desc)]
     ];
   }
 }

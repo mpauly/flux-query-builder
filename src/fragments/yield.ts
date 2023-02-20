@@ -1,7 +1,7 @@
 import { FluxParameterLike, fluxString } from '@influxdata/influxdb-client';
 import { QueryFragment } from './queryFragment';
 
-export class YieldFragment extends QueryFragment implements QueryFragment {
+export class YieldFragment extends QueryFragment {
   protected functionName = 'yield';
 
   constructor(protected name?: string) {

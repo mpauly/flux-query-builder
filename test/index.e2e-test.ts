@@ -65,6 +65,7 @@ test('Test influx queries', async () => {
     .from()
     .range(start, stop)
     .pivot(['_time', '_measurement'], ['quality'], '_value')
+    .drop(['_time'])
     .limit(100n);
   for await (const res of weatherRepo.query(query)) {
     console.log(res);

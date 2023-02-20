@@ -5,7 +5,7 @@ import { QueryFragment } from './queryFragment';
 
 export type ModeChoices = 'by' | 'except';
 
-export class GroupFragment extends QueryFragment implements QueryFragment {
+export class GroupFragment extends QueryFragment {
   protected functionName = 'group';
 
   constructor(protected optionalArgs?: { columns?: FieldName[]; mode?: ModeChoices }) {

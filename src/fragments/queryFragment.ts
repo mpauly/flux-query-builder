@@ -1,7 +1,11 @@
 import { flux, fluxExpression, FluxParameterLike } from '@influxdata/influxdb-client';
 import { QueryLine } from '../types/base';
 
-export abstract class QueryFragment {
+export interface Renderable {
+  renderFlux(): QueryLine;
+}
+
+export abstract class QueryFragment implements Renderable {
   protected abstract functionName: string;
 
   protected abstract collectArgs(): [string, FluxParameterLike | undefined][];

@@ -3,7 +3,7 @@ import { fluxListOfStrings } from '../base/utils';
 import { FieldName } from '../types/base';
 import { QueryFragment } from './queryFragment';
 
-export class DropFragment extends QueryFragment implements QueryFragment {
+export class DropFragment extends QueryFragment {
   protected functionName = 'drop';
 
   constructor(protected columns: string[]) {

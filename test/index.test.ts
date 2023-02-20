@@ -58,12 +58,14 @@ test('Test basic queries', () => {
       query: from('example-bucket')
         .range('-1h')
         .filter({ _measurement: 'example-measurement-name', mytagname: 'example-tag-value' })
-        .filter({ _field: 'example-field-name' }),
+        .filter({ _field: 'example-field-name' })
+        .rawFlux('|> first()'),
       fluxQuery: `
             from(bucket: "example-bucket")
             |> range(start: duration(v: "-1h"))
             |> filter(fn: (r) => r["_measurement"] == "example-measurement-name" and r["mytagname"] == "example-tag-value")
             |> filter(fn: (r) => r["_field"] == "example-field-name")
+            |> first()
             `
     },
     {

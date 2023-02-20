@@ -7,17 +7,17 @@ import { LimitFragment } from '../fragments/limit';
 import { MapFragment } from '../fragments/map';
 import { MeanFragment } from '../fragments/mean';
 import { PivotFragment } from '../fragments/pivot';
-import { QueryFragment } from '../fragments/queryFragment';
+import { Renderable } from '../fragments/queryFragment';
 import { RangeFragment } from '../fragments/range';
+import { RawFluxFragment } from '../fragments/rawFlux';
 import { SortFragment } from '../fragments/sort';
 import { YieldFragment } from '../fragments/yield';
 import { BucketName } from '../types/base';
 
 type Fields<TReturnType> = Extract<keyof TReturnType, string>;
-type StringFields<T> = keyof { [P in keyof T as T[P] extends string | undefined ? P : never]: boolean };
 
 export class FluxQuery<TReturnType> {
-  protected fragments: QueryFragment[] = [];
+  protected fragments: Renderable[] = [];
 
   constructor(name: BucketName) {
     this.fragments.push(new FromFragment(name));
@@ -27,6 +27,11 @@ export class FluxQuery<TReturnType> {
     return this.fragments.map((f) => f.renderFlux()).join('\n');
   }
 
+  rawFlux<TReturn = TReturnType>(...args: ConstructorParameters<typeof RawFluxFragment>): FluxQuery<TReturn> {
+    this.fragments.push(new RawFluxFragment(...args));
+    return this as FluxQuery<TReturn>;
+  }
+
   // flux functions
 
   aggregateWindow(...args: ConstructorParameters<typeof AggregateWindowFragment>) {
@@ -34,7 +39,7 @@ export class FluxQuery<TReturnType> {
     return this;
   }
 
-  drop<TColumns extends Fields<TReturnType>>(columns: TColumns[]): FluxQuery<Omit<TReturnType, TColumns>> {
+  drop<TColumns extends Fields<TReturnType>>(columns: TColumns[]): this {
     this.fragments.push(new DropFragment(columns as string[]));
     return this;
   }
@@ -68,14 +73,7 @@ export class FluxQuery<TReturnType> {
     TRowColumns extends Fields<TReturnType>[],
     TColColumns extends Fields<TReturnType>[],
     TValColumn extends Fields<TReturnType>
-  >(
-    rowKeys: TRowColumns,
-    columnKeys: TColColumns,
-    valueColumn: TValColumn
-  ): FluxQuery<
-    Omit<TReturnType, TColColumns[number] | TValColumn> &
-      Record<Extract<TReturnType[TColColumns[number]], string>, TReturnType[TValColumn]>
-  > {
+  >(rowKeys: TRowColumns, columnKeys: TColColumns, valueColumn: TValColumn): this {
     this.fragments.push(new PivotFragment(rowKeys as string[], columnKeys as string[], valueColumn as string));
     return this;
   }
