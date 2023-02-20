@@ -24,5 +24,28 @@
     "lint": "npx eslint -- src/**/*.ts test/**/*.ts",
     "format": "prettier --config .prettierrc 'src/**/*.ts' 'test/**/*.ts' --write",
     "format-check": "prettier --config .prettierrc 'src/**/*.ts' 'test/**/*.ts' --check"
-  }
+  },
+  "name": "@mpauly/flux-query-builder",
+  "description": "A typescript query builder for the [flux language](https://www.influxdata.com/products/flux/). The query builder features **extensive typing** and **short hands for common operations**.",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mpauly/flux-query-builder.git"
+  },
+  "keywords": [
+    "flux",
+    "query",
+    "builder"
+  ],
+  "author": "Martin Pauly",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/mpauly/flux-query-builder/issues"
+  },
+  "homepage": "https://github.com/mpauly/flux-query-builder#readme"
 }
