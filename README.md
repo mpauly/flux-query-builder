@@ -24,7 +24,7 @@ from(bucket: "example-bucket")
 |> map(fn: (r) => ({r with _value: r.field1 / r.field2 * 100.0}))
 ```
 
-So you don't have to remember the details of the `map` or `filter` syntax, but do not lose the expressiveness of the flux query language.
+So you don't have to remember the details of the `map` or `filter` syntax, instead have strong type support in writing a query, but do not lose the power of the flux query language.
 
 In addition, you can provide type information to the query builder. A query such as
 
@@ -47,7 +47,7 @@ const query = weatherRepo
 
 then leads to an object with correct typing, see the screenshot below.
 
-![Screenshot of type-hints](https://github.com/mpauly/flux-query-build/raw/master/docs/type-hints.png 'Type hints in the flux query builder')
+![Screenshot of type-hints](https://raw.githubusercontent.com/mpauly/flux-query-builder/main/docs/type-hints.png 'Type hints in the flux query builder')
 
 ## Status
 
