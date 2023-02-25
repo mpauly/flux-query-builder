@@ -19,16 +19,29 @@
     "@influxdata/influxdb-client": "^1.33.1"
   },
   "scripts": {
-    "test": "jest",
-    "test-e2e": "npx jest --config jest-e2e.config.js",
-    "lint": "npx eslint -- src/**/*.ts test/**/*.ts",
-    "format": "prettier --config .prettierrc 'src/**/*.ts' 'test/**/*.ts' --write",
-    "format-check": "prettier --config .prettierrc 'src/**/*.ts' 'test/**/*.ts' --check"
+    "build": "npx tsc -p ./tsconfig.build.json",
+    "clean": "rm -r dist",
+    "test": "npm run test:unit && npm run test:lint && npm run test:format",
+    "test:unit": "jest",
+    "test:e2e": "npx jest --config jest-e2e.config.js",
+    "test:lint": "npx eslint -- src/**/*.ts test/**/*.ts",
+    "test:format": "prettier --config .prettierrc 'src/**/*.ts' 'test/**/*.ts' --check",
+    "fix:format": "prettier --config .prettierrc 'src/**/*.ts' 'test/**/*.ts' --write"
   },
   "name": "@mpauly/flux-query-builder",
   "description": "A typescript query builder for the [flux language](https://www.influxdata.com/products/flux/). The query builder features **extensive typing** and **short hands for common operations**.",
   "version": "0.1.0",
-  "main": "dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./types": {
+        "import": "./dist/types/index.js",
+        "types": "./dist/types/index.d.ts"
+    }
+  },
+  "files": ["/dist", "!/dist/**/*.js.map"],
   "directories": {
     "doc": "docs",
     "test": "test"
@@ -43,9 +56,12 @@
     "builder"
   ],
   "author": "Martin Pauly",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/mpauly/flux-query-builder/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "homepage": "https://github.com/mpauly/flux-query-builder#readme"
 }
