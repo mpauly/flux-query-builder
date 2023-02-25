@@ -39,7 +39,9 @@ export class InfluxRepository<TSchema extends BaseSchema, TMeasurement extends s
     >(this.bucket);
   }
 
-  query<TReturnType>(query: FluxQuery<TReturnType>): AsyncIterable<TReturnType> {
+  query<TReturnType extends Record<string, Date | FluxFieldTypes>>(
+    query: FluxQuery<TReturnType>
+  ): AsyncIterable<TReturnType> {
     const fluxQuery = query.renderFluxQuery();
     const iterator = this.queryApi.iterateRows(fluxQuery);
     return {

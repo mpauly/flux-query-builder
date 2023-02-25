@@ -1,13 +1,14 @@
-import { Fields } from './base';
+import { FluxFields } from './base';
 
 export const IN_KEY = '$in';
+export const GT_KEY = '$gt';
+export const LT_KEY = '$lt';
 
-export type FluxTagValue = string | number | boolean;
 export interface FluxFilterOptions<TFieldType> {
   [IN_KEY]?: TFieldType[];
-  $gt?: TFieldType extends number | bigint ? TFieldType : never;
-  $lt?: TFieldType extends number | bigint ? TFieldType : never;
+  [GT_KEY]?: TFieldType extends number | bigint ? TFieldType : never;
+  [LT_KEY]?: TFieldType extends number | bigint ? TFieldType : never;
 }
 export type FluxFilterQuery<TReturnType> = {
-  [K in Fields<TReturnType>]?: TReturnType[K] | FluxFilterOptions<TReturnType[K]>;
+  [K in FluxFields<TReturnType>]?: TReturnType[K] | FluxFilterOptions<TReturnType[K]>;
 };

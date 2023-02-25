@@ -1,7 +1,7 @@
-import { flux, fluxExpression, FluxParameterLike } from '@influxdata/influxdb-client';
+import { flux, fluxExpression, fluxFloat, FluxParameterLike } from '@influxdata/influxdb-client';
 import { FluxFunction } from '../base/function';
-import { Fields, FluxFieldTypes } from '../types/base';
-import { FluxFilterOptions, FluxFilterQuery, FluxTagValue, IN_KEY } from '../types/filter';
+import { FluxFields, FluxFieldTypes, FluxTagValue } from '../types/base';
+import { FluxFilterOptions, FluxFilterQuery, GT_KEY, IN_KEY, LT_KEY } from '../types/filter';
 import { QueryFragment } from './queryFragment';
 
 export class FilterFragment<
@@ -13,14 +13,23 @@ export class FilterFragment<
     super();
   }
 
-  buildFieldFilter<TField extends Fields<TReturnType>>(
+  buildFieldFilter<TField extends FluxFields<TReturnType>>(
     field: TField,
     value: FluxTagValue | FluxFilterOptions<TReturnType[TField]>
   ) {
     if (typeof value === 'object') {
-      if (value[IN_KEY]) {
-        const set = value[IN_KEY]?.map((v) => flux`${v}`).join(', ');
+      const inList = value[IN_KEY];
+      if (inList) {
+        const set = inList.map((v) => flux`${v}`).join(', ');
         return flux`contains(value: r[${field}], set: [${fluxExpression(set)}])`;
+      }
+      const gtValue = value[GT_KEY];
+      if (gtValue) {
+        return flux`${field} > ${fluxFloat(gtValue)}])`;
+      }
+      const ltValue = value[LT_KEY];
+      if (ltValue) {
+        return flux`${field} < ${fluxFloat(gtValue)}])`;
       }
     }
     return flux`r[${field}] == ${value}`;
@@ -29,7 +38,7 @@ export class FilterFragment<
   buildFilterFunction(filters: FluxFilterQuery<TReturnType>, concat: 'and' | 'or' = 'and'): FluxFunction<any, boolean> {
     const filterString = Object.entries(filters)
       .filter(([_key, value]) => value !== undefined)
-      .map(([key, value]) => this.buildFieldFilter(key as Fields<TReturnType>, value as FluxTagValue))
+      .map(([key, value]) => this.buildFieldFilter(key as FluxFields<TReturnType>, value as FluxTagValue))
       .join(` ${concat} `);
     const fluxQuery = flux`(r) => ${fluxExpression(filterString)}`;
     return new FluxFunction<any, boolean>(fluxQuery);

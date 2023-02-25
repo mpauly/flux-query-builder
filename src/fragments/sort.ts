@@ -1,12 +1,12 @@
 import { fluxBool, FluxParameterLike } from '@influxdata/influxdb-client';
 import { fluxListOfStrings } from '../base/utils';
-import { FieldName } from '../types/base';
+import { FluxFieldName } from '../types/base';
 import { QueryFragment } from './queryFragment';
 
 export class SortFragment extends QueryFragment {
   protected functionName = 'sort';
 
-  constructor(protected optionalArgs?: { columns?: FieldName[]; desc?: boolean }) {
+  constructor(protected optionalArgs?: { columns?: FluxFieldName[]; desc?: boolean }) {
     super();
   }
 

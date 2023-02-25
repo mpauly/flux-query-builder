@@ -12,14 +12,14 @@ import { RangeFragment } from '../fragments/range';
 import { RawFluxFragment } from '../fragments/rawFlux';
 import { SortFragment } from '../fragments/sort';
 import { YieldFragment } from '../fragments/yield';
-import { BucketName, Fields, FluxFieldTypes } from '../types/base';
+import { FluxBucketName, FluxFields, FluxFieldTypes } from '../types/base';
 import { FluxFilterQuery } from '../types/filter';
 import { FluxFunction } from './function';
 
 export class FluxQuery<TReturnType extends Record<string, FluxFieldTypes | Date>> {
   protected fragments: Renderable[] = [];
 
-  constructor(name: BucketName) {
+  constructor(name: FluxBucketName) {
     this.fragments.push(new FromFragment(name));
   }
 
@@ -41,7 +41,7 @@ export class FluxQuery<TReturnType extends Record<string, FluxFieldTypes | Date>
     return this;
   }
 
-  drop<TColumns extends Fields<TReturnType>>(columns: TColumns[]): this {
+  drop<TColumns extends FluxFields<TReturnType>>(columns: TColumns[]): this {
     this.fragments.push(new DropFragment(columns as string[]));
     return this;
   }
@@ -51,7 +51,7 @@ export class FluxQuery<TReturnType extends Record<string, FluxFieldTypes | Date>
     return this;
   }
 
-  group<TColumns extends Fields<TReturnType>>(optionalArgs?: { columns?: TColumns[]; mode?: ModeChoices }) {
+  group<TColumns extends FluxFields<TReturnType>>(optionalArgs?: { columns?: TColumns[]; mode?: ModeChoices }) {
     this.fragments.push(new GroupFragment(optionalArgs as ConstructorParameters<typeof GroupFragment>[0]));
     return this;
   }
@@ -72,9 +72,9 @@ export class FluxQuery<TReturnType extends Record<string, FluxFieldTypes | Date>
   }
 
   pivot<
-    TRowColumns extends Fields<TReturnType>[],
-    TColColumns extends Fields<TReturnType>[],
-    TValColumn extends Fields<TReturnType>
+    TRowColumns extends FluxFields<TReturnType>[],
+    TColColumns extends FluxFields<TReturnType>[],
+    TValColumn extends FluxFields<TReturnType>
   >(rowKeys: TRowColumns, columnKeys: TColColumns, valueColumn: TValColumn): this {
     this.fragments.push(new PivotFragment(rowKeys as string[], columnKeys as string[], valueColumn as string));
     return this;
@@ -85,7 +85,7 @@ export class FluxQuery<TReturnType extends Record<string, FluxFieldTypes | Date>
     return this;
   }
 
-  sort<TColumns extends Fields<TReturnType>>(optionalArgs?: { columns?: TColumns[]; desc?: boolean }) {
+  sort<TColumns extends FluxFields<TReturnType>>(optionalArgs?: { columns?: TColumns[]; desc?: boolean }) {
     this.fragments.push(new SortFragment(optionalArgs));
     return this;
   }
@@ -107,6 +107,6 @@ export function from<
     _field: string;
     _measurement: string;
   } & Record<string, string>
->(name: BucketName): FluxQuery<TReturnType> {
+>(name: FluxBucketName): FluxQuery<TReturnType> {
   return new FluxQuery<TReturnType>(name);
 }
