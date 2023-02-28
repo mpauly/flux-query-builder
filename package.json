@@ -30,18 +30,10 @@
   },
   "name": "@mpauly/flux-query-builder",
   "description": "A typescript query builder for the [flux language](https://www.influxdata.com/products/flux/). The query builder features **extensive typing** and **short hands for common operations**.",
-  "version": "0.1.2",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    },
-    "./types": {
-        "import": "./dist/types/index.js",
-        "types": "./dist/types/index.d.ts"
-    }
-  },
-  "files": ["/dist", "!/dist/**/*.js.map"],
+  "version": "0.1.3",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["/dist", "!/dist/**/*.js.map", "!/dist/**/*.ts.map"],
   "directories": {
     "doc": "docs",
     "test": "test"
