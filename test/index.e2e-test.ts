@@ -1,13 +1,10 @@
-import { from } from '../src';
-import { expect, test } from '@jest/globals';
-import { fluxExpression, InfluxDB, Point } from '@influxdata/influxdb-client';
+import { test } from '@jest/globals';
+import { InfluxDB, Point } from '@influxdata/influxdb-client';
 import { InfluxRepository } from '../src/influx/repository';
 
 test('Test influx queries', async () => {
   const start = new Date(1990, 9, 3);
-  const startStr = start.toISOString();
   const stop = new Date(2000, 0, 0);
-  const stopStr = stop.toISOString();
 
   const url = 'http://localhost:8086';
   const token = 'testToken';

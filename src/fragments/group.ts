@@ -16,7 +16,7 @@ export class GroupFragment extends QueryFragment {
     const cols = this.optionalArgs?.columns === undefined ? undefined : fluxListOfStrings(this.optionalArgs.columns);
     return [
       ['columns', cols],
-      ['mode', this.optionalArgs?.mode === undefined ? undefined : fluxString(this.optionalArgs.mode)]
+      ['mode', this.optionalArgs?.mode === undefined ? undefined : fluxString(this.optionalArgs.mode)],
     ];
   }
 }

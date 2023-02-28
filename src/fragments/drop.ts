@@ -1,6 +1,5 @@
 import { FluxParameterLike } from '@influxdata/influxdb-client';
 import { fluxListOfStrings } from '../base/utils';
-import { FluxFieldName } from '../types/base';
 import { QueryFragment } from './queryFragment';
 
 export class DropFragment extends QueryFragment {

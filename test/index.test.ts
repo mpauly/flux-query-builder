@@ -32,7 +32,7 @@ test('Test basic queries', () => {
             |> filter(fn: (r) => r["_measurement"] == "example-measurement")
             |> mean()
             |> yield(name: "_results")
-            `
+            `,
     },
     {
       query: from('example-bucket').range(start, stop).aggregateWindow('1w', 'mean', { offset: '-3d' }),
@@ -40,7 +40,7 @@ test('Test basic queries', () => {
             from(bucket: "example-bucket")
             |> range(start: time(v: "${startStr}"), stop: time(v: "${stopStr}"))
             |> aggregateWindow(every: duration(v: "1w"), fn: mean, offset: duration(v: "-3d"))
-            `
+            `,
     },
     {
       query: from('example-bucket')
@@ -52,7 +52,7 @@ test('Test basic queries', () => {
             |> range(start: duration(v: "-5m"))
             |> filter(fn: (r) => r["_measurement"] == "mem" and r["_field"] == "used_percent")
             |> drop(columns: ["table"])
-            `
+            `,
     },
     {
       query: from('example-bucket')
@@ -66,7 +66,7 @@ test('Test basic queries', () => {
             |> filter(fn: (r) => r["_measurement"] == "example-measurement-name" and r["mytagname"] == "example-tag-value")
             |> filter(fn: (r) => r["_field"] == "example-field-name")
             |> first()
-            `
+            `,
     },
     {
       query: from('example-bucket')
@@ -78,7 +78,7 @@ test('Test basic queries', () => {
             |> group(columns: ["_time"])
             |> mean()
             |> group(columns: ["_value", "_time"], mode: "except")
-            `
+            `,
     },
     {
       query: from('example-bucket')
@@ -92,7 +92,7 @@ test('Test basic queries', () => {
             |> filter(fn: (r) => r["_measurement"] == "system" and r["_field"] == "uptime")
             |> sort(columns: ["region", "host", "_value"])
             |> limit(n: 10)
-            `
+            `,
     },
     // {
     //     query: from('example-bucket'),
@@ -114,7 +114,7 @@ test('Test basic queries', () => {
             |> range(start: duration(v: "-10m"))
             |> filter(fn: (r) => r["_measurement"] == "mem" and r["_field"] == "active")
             |> map(fn: (r) => ({r with _value: r["_value"] / 1073741824}))
-            `
+            `,
     },
     {
       query: from('example-bucket')
@@ -124,7 +124,7 @@ test('Test basic queries', () => {
             from(bucket: "example-bucket")
             |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
             |> map(fn: (r) => ({r with _value: (r.field1 + r.field2) / r.field3 * 100.0}))        
-            `
+            `,
     },
     {
       query: from('example-bucket')
@@ -140,8 +140,8 @@ test('Test basic queries', () => {
             |> group()
             |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
             |> map(fn: (r) => ({r with _value: r.field1 / r.field2 * 100.0}))      
-            `
-    }
+            `,
+    },
   ];
 
   queriesToTest.forEach((q) => {

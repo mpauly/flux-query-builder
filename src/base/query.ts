@@ -90,7 +90,9 @@ export class FluxQuery<TReturnType extends Record<string, FluxFieldTypes | Date>
     return this;
   }
 
-  yield<TKey extends string = '_results', TValueType = FluxFieldTypes>(name?: TKey): this {
+  yield<TKey extends string = '_results', TValueType = FluxFieldTypes>(
+    name?: TKey
+  ): FluxQuery<TReturnType & { TKey: TValueType }> {
     this.fragments.push(new YieldFragment(name));
     return this;
   }

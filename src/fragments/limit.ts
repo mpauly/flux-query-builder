@@ -11,7 +11,7 @@ export class LimitFragment extends QueryFragment {
   protected collectArgs(): [string, FluxParameterLike | undefined][] {
     return [
       ['n', fluxInteger(this.n)],
-      ['offset', this.offset === undefined ? undefined : fluxInteger(this.offset)]
+      ['offset', this.offset === undefined ? undefined : fluxInteger(this.offset)],
     ];
   }
 }

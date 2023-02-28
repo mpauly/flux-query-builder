@@ -14,7 +14,7 @@ export class SortFragment extends QueryFragment {
     const cols = this.optionalArgs?.columns === undefined ? undefined : fluxListOfStrings(this.optionalArgs.columns);
     return [
       ['columns', cols],
-      ['desc', this.optionalArgs?.desc === undefined ? undefined : fluxBool(this.optionalArgs.desc)]
+      ['desc', this.optionalArgs?.desc === undefined ? undefined : fluxBool(this.optionalArgs.desc)],
     ];
   }
 }

@@ -17,7 +17,7 @@ export class PivotFragment extends QueryFragment {
     return [
       ['rowKey', fluxListOfStrings(this.rowKeys)],
       ['columnKey', fluxListOfStrings(this.columnKeys)],
-      ['valueColumn', fluxString(this.valueColumn)]
+      ['valueColumn', fluxString(this.valueColumn)],
     ];
   }
 }

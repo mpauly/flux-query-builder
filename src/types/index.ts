@@ -4,7 +4,7 @@ export {
   FluxQueryLine,
   FluxBucketName,
   FluxFunctionName,
-  FluxDurationString
+  FluxDurationString,
 } from './base';
 export { FluxFilterQuery } from './filter';
 export { FluxMapQuery } from './map';

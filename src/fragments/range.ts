@@ -20,7 +20,7 @@ export class RangeFragment extends QueryFragment {
   protected collectArgs(): [string, FluxParameterLike | undefined][] {
     return [
       ['start', this.inputToFlux(this.start)],
-      ['stop', this.stop === undefined ? undefined : this.inputToFlux(this.stop)]
+      ['stop', this.stop === undefined ? undefined : this.inputToFlux(this.stop)],
     ];
   }
 }

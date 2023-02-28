@@ -50,7 +50,7 @@ export class InfluxRepository<TSchema extends BaseSchema, TMeasurement extends s
           const obj = tableMeta.toObject(values) as TReturnType;
           yield obj;
         }
-      }
+      },
     };
   }
 }
