@@ -1,8 +1,8 @@
 import { FluxParameterLike, fluxString } from '@influxdata/influxdb-client';
 import { QueryFragment } from './queryFragment';
 
-export class MeanFragment extends QueryFragment {
-  protected functionName = 'mean';
+export class MinFragment extends QueryFragment {
+  protected functionName = 'min';
 
   constructor(protected column?: string) {
     super();

@@ -1,17 +1,37 @@
-import { AggregateWindowFragment } from '../fragments/aggregateWindow';
-import { DropFragment } from '../fragments/drop';
-import { FilterFragment } from '../fragments/filter';
-import { FromFragment } from '../fragments/from';
-import { GroupFragment, ModeChoices } from '../fragments/group';
-import { LimitFragment } from '../fragments/limit';
-import { MapFragment } from '../fragments/map';
-import { MeanFragment } from '../fragments/mean';
-import { PivotFragment } from '../fragments/pivot';
-import { Renderable } from '../fragments/queryFragment';
-import { RangeFragment } from '../fragments/range';
-import { RawFluxFragment } from '../fragments/rawFlux';
-import { SortFragment } from '../fragments/sort';
-import { YieldFragment } from '../fragments/yield';
+import {
+  Renderable,
+  FromFragment,
+  RawFluxFragment,
+  AggregateWindowFragment,
+  BottomFragment,
+  CountFragment,
+  DistinctFragment,
+  DropFragment,
+  DuplicateFragment,
+  FilterFragment,
+  FirstFragment,
+  GroupFragment,
+  ModeChoices,
+  IncreaseFragment,
+  KeepFragment,
+  LastFragment,
+  LimitFragment,
+  MapFragment,
+  MaxFragment,
+  MeanFragment,
+  MedianFragment,
+  MinFragment,
+  PivotFragment,
+  RangeFragment,
+  RenameFragment,
+  SortFragment,
+  SumFragment,
+  TailFragment,
+  TopFragment,
+  UniqueFragment,
+  WindowFragment,
+  YieldFragment,
+} from '../fragments';
 import { FluxBucketName, FluxFields, FluxFieldTypes } from '../types/base';
 import { FluxFilterQuery } from '../types/filter';
 import { FluxFunction } from './function';
@@ -41,8 +61,31 @@ export class FluxQuery<TReturnType extends Record<string, FluxFieldTypes | Date>
     return this;
   }
 
-  drop<TColumns extends FluxFields<TReturnType>>(columns: TColumns[]): this {
-    this.fragments.push(new DropFragment(columns as string[]));
+  bottom<TColumns extends FluxFields<TReturnType>>(n: bigint, columns?: TColumns[]) {
+    this.fragments.push(new BottomFragment(n, columns));
+    return this;
+  }
+
+  count<TColumns extends FluxFields<TReturnType>>(column: TColumns): FluxQuery<TReturnType & { _value: bigint }> {
+    this.fragments.push(new CountFragment(column));
+    return this;
+  }
+
+  distinct(...args: ConstructorParameters<typeof DistinctFragment>) {
+    this.fragments.push(new DistinctFragment(...args));
+    return this;
+  }
+
+  drop<TColumns extends FluxFields<TReturnType>>(columns: TColumns[]): FluxQuery<Omit<TReturnType, TColumns>> {
+    this.fragments.push(new DropFragment(columns));
+    return this;
+  }
+
+  duplicate<TColumn extends FluxFields<TReturnType>, TNewCol extends string>(
+    column: TColumn,
+    as: TNewCol
+  ): FluxQuery<TReturnType & Record<TNewCol, TReturnType[TColumn]>> {
+    this.fragments.push(new DuplicateFragment(column, as));
     return this;
   }
 
@@ -51,8 +94,28 @@ export class FluxQuery<TReturnType extends Record<string, FluxFieldTypes | Date>
     return this;
   }
 
+  first<TColumns extends FluxFields<TReturnType>>(column: TColumns) {
+    this.fragments.push(new FirstFragment(column));
+    return this;
+  }
+
   group<TColumns extends FluxFields<TReturnType>>(optionalArgs?: { columns?: TColumns[]; mode?: ModeChoices }) {
     this.fragments.push(new GroupFragment(optionalArgs as ConstructorParameters<typeof GroupFragment>[0]));
+    return this;
+  }
+
+  increase<TColumns extends FluxFields<TReturnType>>(columns: TColumns[]) {
+    this.fragments.push(new IncreaseFragment(columns));
+    return this;
+  }
+
+  keep<TColumns extends FluxFields<TReturnType>>(columns: TColumns[]): FluxQuery<Pick<TReturnType, TColumns>> {
+    this.fragments.push(new KeepFragment(columns));
+    return this;
+  }
+
+  last(...args: ConstructorParameters<typeof LastFragment>) {
+    this.fragments.push(new LastFragment(...args));
     return this;
   }
 
@@ -66,8 +129,23 @@ export class FluxQuery<TReturnType extends Record<string, FluxFieldTypes | Date>
     return this;
   }
 
-  mean(...args: ConstructorParameters<typeof MeanFragment>) {
-    this.fragments.push(new MeanFragment(...args));
+  max<TColumns extends FluxFields<TReturnType>>(column: TColumns) {
+    this.fragments.push(new MaxFragment(column));
+    return this;
+  }
+
+  mean<TColumns extends FluxFields<TReturnType>>(column: TColumns) {
+    this.fragments.push(new MeanFragment(column));
+    return this;
+  }
+
+  median<TColumns extends FluxFields<TReturnType>>(column: TColumns) {
+    this.fragments.push(new MedianFragment(column));
+    return this;
+  }
+
+  min<TColumns extends FluxFields<TReturnType>>(column: TColumns) {
+    this.fragments.push(new MinFragment(column));
     return this;
   }
 
@@ -85,8 +163,38 @@ export class FluxQuery<TReturnType extends Record<string, FluxFieldTypes | Date>
     return this;
   }
 
+  rename<TColumns extends FluxFields<TReturnType>>(columns: Record<TColumns, string>) {
+    this.fragments.push(new RenameFragment(columns));
+    return this;
+  }
+
   sort<TColumns extends FluxFields<TReturnType>>(optionalArgs?: { columns?: TColumns[]; desc?: boolean }) {
     this.fragments.push(new SortFragment(optionalArgs));
+    return this;
+  }
+
+  sum<TColumns extends FluxFields<TReturnType>>(column: TColumns) {
+    this.fragments.push(new SumFragment(column));
+    return this;
+  }
+
+  tail(...args: ConstructorParameters<typeof TailFragment>) {
+    this.fragments.push(new TailFragment(...args));
+    return this;
+  }
+
+  top<TColumns extends FluxFields<TReturnType>>(n: bigint, columns?: TColumns[]) {
+    this.fragments.push(new TopFragment(n, columns));
+    return this;
+  }
+
+  unique<TColumns extends FluxFields<TReturnType>>(column: TColumns) {
+    this.fragments.push(new UniqueFragment(column));
+    return this;
+  }
+
+  window(...args: ConstructorParameters<typeof WindowFragment>) {
+    this.fragments.push(new WindowFragment(...args));
     return this;
   }
 
