@@ -94,7 +94,7 @@ export class FluxQuery<TReturnType extends Record<string, FluxFieldTypes | Date>
     return this;
   }
 
-  first<TColumns extends FluxFields<TReturnType>>(column: TColumns) {
+  first<TColumns extends FluxFields<TReturnType>>(column?: TColumns) {
     this.fragments.push(new FirstFragment(column));
     return this;
   }
@@ -114,8 +114,8 @@ export class FluxQuery<TReturnType extends Record<string, FluxFieldTypes | Date>
     return this;
   }
 
-  last(...args: ConstructorParameters<typeof LastFragment>) {
-    this.fragments.push(new LastFragment(...args));
+  last<TColumns extends FluxFields<TReturnType>>(column?: TColumns) {
+    this.fragments.push(new LastFragment(column));
     return this;
   }
 
@@ -129,22 +129,22 @@ export class FluxQuery<TReturnType extends Record<string, FluxFieldTypes | Date>
     return this;
   }
 
-  max<TColumns extends FluxFields<TReturnType>>(column: TColumns) {
+  max<TColumns extends FluxFields<TReturnType>>(column?: TColumns) {
     this.fragments.push(new MaxFragment(column));
     return this;
   }
 
-  mean<TColumns extends FluxFields<TReturnType>>(column: TColumns) {
+  mean<TColumns extends FluxFields<TReturnType>>(column?: TColumns) {
     this.fragments.push(new MeanFragment(column));
     return this;
   }
 
-  median<TColumns extends FluxFields<TReturnType>>(column: TColumns) {
+  median<TColumns extends FluxFields<TReturnType>>(column?: TColumns) {
     this.fragments.push(new MedianFragment(column));
     return this;
   }
 
-  min<TColumns extends FluxFields<TReturnType>>(column: TColumns) {
+  min<TColumns extends FluxFields<TReturnType>>(column?: TColumns) {
     this.fragments.push(new MinFragment(column));
     return this;
   }
@@ -173,7 +173,7 @@ export class FluxQuery<TReturnType extends Record<string, FluxFieldTypes | Date>
     return this;
   }
 
-  sum<TColumns extends FluxFields<TReturnType>>(column: TColumns) {
+  sum<TColumns extends FluxFields<TReturnType>>(column?: TColumns) {
     this.fragments.push(new SumFragment(column));
     return this;
   }
@@ -188,7 +188,7 @@ export class FluxQuery<TReturnType extends Record<string, FluxFieldTypes | Date>
     return this;
   }
 
-  unique<TColumns extends FluxFields<TReturnType>>(column: TColumns) {
+  unique<TColumns extends FluxFields<TReturnType>>(column?: TColumns) {
     this.fragments.push(new UniqueFragment(column));
     return this;
   }
