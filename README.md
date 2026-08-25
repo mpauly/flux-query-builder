@@ -1,5 +1,8 @@
 # flux-query-builder
 
+Since [flux has been put into maintenance mode](https://github.com/influxdata/flux#flux---influx-data-language) this project is also no longer maintained.
+
+
 A typescript query builder for the [flux language](https://www.influxdata.com/products/flux/). The query builder features **extensive typing** and **short hands for common operations**.
 
 As a simple example the call
